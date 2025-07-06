@@ -1,24 +1,37 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "@/lib/api"; // your axios instance
 
 const UserLogin = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState(""); // changed from username
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("User login submitted!");
 
     try {
-      const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+      const response = await api.post("/auth/login", {
+        email,
+        password,
       });
 
-      const data = await response.json();
-      console.log("Response from API:", data);
-    } catch (err) {
-      console.error("Login failed:", err);
+      const { token, user } = response.data;
+
+      // ✅ Only allow users to log in from this page
+      if (user.role !== "user") {
+        alert("Access denied. You are not a user.");
+        return;
+      }
+
+      // Save token and user info
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      alert("✅ Login successful!");
+      navigate("/user/dashboard");
+    } catch (err: any) {
+      alert(err.response?.data?.message || "Login failed");
     }
   };
 
@@ -28,13 +41,14 @@ const UserLogin = () => {
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">User Login</h2>
         <form className="space-y-5" onSubmit={handleLogin}>
           <div>
-            <label className="block text-gray-700 mb-1">Username</label>
+            <label className="block text-gray-700 mb-1">Email</label>
             <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter username"
+              placeholder="Enter your email"
+              required
             />
           </div>
           <div>
@@ -44,7 +58,8 @@ const UserLogin = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter password"
+              placeholder="Enter your password"
+              required
             />
           </div>
           <button

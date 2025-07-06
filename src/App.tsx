@@ -3,11 +3,17 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+// Pages
 import Index from "./pages/Index";
 import UserLogin from "./pages/login/user";
 import AdminLogin from "./pages/login/admin";
-import WorkerLogin from "./pages/login/worker"; 
-import UserRegister from "./pages/register/user";
+import WorkerLogin from "./pages/login/worker";
+import UserRegister from "./pages/register/UserRegister";
+
+import AdminDashboard from "./pages/dashboard/AdminDashboard";
+import UserDashboard from "./pages/dashboard/UserDashboard";
+import WorkerDashboard from "./pages/dashboard/WorkerDashboard";
 
 const queryClient = new QueryClient();
 
@@ -19,11 +25,16 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/login/user" element={<UserLogin />} /> 
-          <Route path="/login/admin" element={<AdminLogin />} />  
-          <Route path="/login/worker" element={<WorkerLogin />} /> 
-          <Route path="/register/user" element={<UserRegister />} /> 
-          </Routes>
+          <Route path="/login/user" element={<UserLogin />} />
+          <Route path="/login/admin" element={<AdminLogin />} />
+          <Route path="/login/worker" element={<WorkerLogin />} />
+          <Route path="/register/user" element={<UserRegister />} />
+
+          {/* Dashboards */}
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/user/dashboard" element={<UserDashboard />} />
+          <Route path="/worker/dashboard" element={<WorkerDashboard />} />
+        </Routes>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

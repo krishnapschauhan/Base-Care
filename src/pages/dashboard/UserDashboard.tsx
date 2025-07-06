@@ -1,0 +1,157 @@
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import api from "@/lib/api";
+import Header from "@/components/Header";
+
+const UserDashboard = () => {
+  const [description, setDescription] = useState("");
+  const [location, setLocation] = useState("");
+  const [reports, setReports] = useState([]);
+
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  const fetchReports = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await api.get(`/reports/user/${user.id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setReports(res.data);
+    } catch (err) {
+      console.error("Failed to fetch reports", err);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("token");
+      await api.post(
+        "/reports",
+        { description, location },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      alert("Report submitted successfully");
+      setDescription("");
+      setLocation("");
+      fetchReports();
+    } catch (err: any) {
+      alert(err.response?.data?.message || "Failed to submit report");
+    }
+  };
+
+  useEffect(() => {
+    fetchReports();
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-[url('/heroimage.jpg')] bg-cover bg-center bg-no-repeat">
+      {/* ✅ Navbar/Header */}
+      <Header />
+
+      {/* ✅ Light transparent overlay */}
+      <div className="min-h-screen bg-black/30 backdrop-brightness-90 p-6">
+        <motion.div
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-10"
+        >
+          <h1 className="text-4xl font-bold text-white mb-2">
+            Welcome to Your Dashboard
+          </h1>
+          <p className="text-indigo-100 text-lg">
+            Submit issues and track progress in real time.
+          </p>
+        </motion.div>
+
+        {/* ✅ Complaint Form */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="max-w-xl mx-auto bg-white/90 backdrop-blur-md rounded-2xl shadow-xl p-6 mb-10"
+        >
+          <h2 className="text-2xl font-semibold mb-4 text-blue-700">
+            Submit a Complaint
+          </h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-gray-700 mb-1">Description</label>
+              <textarea
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                rows={4}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-gray-700 mb-1">Location</label>
+              <input
+                type="text"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+            >
+              Submit
+            </button>
+          </form>
+        </motion.div>
+
+        {/* ✅ Complaint Cards */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          {reports.map((report) => (
+            <motion.div
+              key={report.id}
+              whileHover={{ scale: 1.04 }}
+              transition={{ type: "spring", stiffness: 180 }}
+              className="bg-white/90 backdrop-blur-lg shadow-lg rounded-xl p-5 border border-gray-200"
+            >
+              <h3 className="text-xl font-bold text-blue-700 mb-2">
+                #{report.id}
+              </h3>
+              <p className="text-gray-700 mb-1">
+                <strong>Description:</strong> {report.description}
+              </p>
+              <p className="text-gray-600 mb-1">
+                <strong>Location:</strong> {report.location}
+              </p>
+              <p className="mt-2">
+                <span
+                  className={`inline-block px-3 py-1 rounded-full text-white text-xs font-medium ${
+                    report.status === "pending"
+                      ? "bg-yellow-500"
+                      : report.status === "assigned"
+                      ? "bg-blue-500"
+                      : "bg-green-600"
+                  }`}
+                >
+                  {report.status.toUpperCase()}
+                </span>
+              </p>
+              <p className="text-gray-400 text-xs mt-1">
+                Submitted: {new Date(report.created_at).toLocaleString()}
+              </p>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </div>
+  );
+};
+
+export default UserDashboard;
