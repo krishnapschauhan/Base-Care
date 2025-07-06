@@ -46,12 +46,14 @@ const UserDashboard = () => {
     fetchReports();
   }, []);
 
+  const pendingReports = reports.filter((r) => r.status !== "completed");
+  const completedReports = reports.filter((r) => r.status === "completed");
+
   return (
     <div className="min-h-screen bg-[url('/heroimage.jpg')] bg-cover bg-center bg-no-repeat">
-      {/* ✅ Navbar/Header */}
+      {/* ✅ Navbar */}
       <Header />
 
-      {/* ✅ Light transparent overlay */}
       <div className="min-h-screen bg-black/30 backdrop-brightness-90 p-6">
         <motion.div
           initial={{ opacity: 0, y: -30 }}
@@ -107,48 +109,91 @@ const UserDashboard = () => {
           </form>
         </motion.div>
 
-        {/* ✅ Complaint Cards */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          {reports.map((report) => (
-            <motion.div
-              key={report.id}
-              whileHover={{ scale: 1.04 }}
-              transition={{ type: "spring", stiffness: 180 }}
-              className="bg-white/90 backdrop-blur-lg shadow-lg rounded-xl p-5 border border-gray-200"
-            >
-              <h3 className="text-xl font-bold text-blue-700 mb-2">
-                #{report.id}
-              </h3>
-              <p className="text-gray-700 mb-1">
-                <strong>Description:</strong> {report.description}
-              </p>
-              <p className="text-gray-600 mb-1">
-                <strong>Location:</strong> {report.location}
-              </p>
-              <p className="mt-2">
-                <span
-                  className={`inline-block px-3 py-1 rounded-full text-white text-xs font-medium ${
-                    report.status === "pending"
-                      ? "bg-yellow-500"
-                      : report.status === "assigned"
-                      ? "bg-blue-500"
-                      : "bg-green-600"
-                  }`}
-                >
-                  {report.status.toUpperCase()}
-                </span>
-              </p>
-              <p className="text-gray-400 text-xs mt-1">
-                Submitted: {new Date(report.created_at).toLocaleString()}
-              </p>
-            </motion.div>
-          ))}
-        </motion.div>
+        {/* ✅ Pending Complaints */}
+        <div className="mb-8">
+          <h2 className="text-xl text-white font-semibold mb-4">
+            🚧 Pending Complaints
+          </h2>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {pendingReports.map((report) => (
+              <motion.div
+                key={report.id}
+                whileHover={{ scale: 1.04 }}
+                transition={{ type: "spring", stiffness: 180 }}
+                className="bg-white/90 backdrop-blur-lg shadow-lg rounded-xl p-5 border border-gray-200"
+              >
+                <h3 className="text-xl font-bold text-blue-700 mb-2">
+                  #{report.id}
+                </h3>
+                <p className="text-gray-700 mb-1">
+                  <strong>Description:</strong> {report.description}
+                </p>
+                <p className="text-gray-600 mb-1">
+                  <strong>Location:</strong> {report.location}
+                </p>
+                <p className="mt-2">
+                  <span
+                    className={`inline-block px-3 py-1 rounded-full text-white text-xs font-medium ${
+                      report.status === "pending"
+                        ? "bg-yellow-500"
+                        : "bg-blue-500"
+                    }`}
+                  >
+                    {report.status.toUpperCase()}
+                  </span>
+                </p>
+                <p className="text-gray-400 text-xs mt-1">
+                  Submitted: {new Date(report.created_at).toLocaleString()}
+                </p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* ✅ Completed Complaints */}
+        <div>
+          <h2 className="text-xl text-white font-semibold mb-4">
+            ✅ Completed Complaints
+          </h2>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {completedReports.map((report) => (
+              <motion.div
+                key={report.id}
+                whileHover={{ scale: 1.04 }}
+                transition={{ type: "spring", stiffness: 180 }}
+                className="bg-white/90 backdrop-blur-lg shadow-lg rounded-xl p-5 border border-gray-200"
+              >
+                <h3 className="text-xl font-bold text-green-700 mb-2">
+                  #{report.id}
+                </h3>
+                <p className="text-gray-700 mb-1">
+                  <strong>Description:</strong> {report.description}
+                </p>
+                <p className="text-gray-600 mb-1">
+                  <strong>Location:</strong> {report.location}
+                </p>
+                <p className="mt-2">
+                  <span className="inline-block px-3 py-1 rounded-full text-white text-xs font-medium bg-green-600">
+                    COMPLETED
+                  </span>
+                </p>
+                <p className="text-gray-400 text-xs mt-1">
+                  Submitted: {new Date(report.created_at).toLocaleString()}
+                </p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
       </div>
     </div>
   );
