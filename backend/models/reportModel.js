@@ -1,11 +1,11 @@
 const db = require("../config/mydb");
 
-// ✅ Create/Submit a new report
-const submitReport = async (user_id, description, location) => {
+// ✅ Create/Submit a new report with extended fields
+const submitReport = async (user_id, description, location, category, landmark, urgency) => {
   const res = await db.query(
-    `INSERT INTO reports (user_id, description, status, location)
-     VALUES ($1, $2, 'pending', $3) RETURNING *`,
-    [user_id, description, location]
+    `INSERT INTO reports (user_id, description, location, category, landmark, urgency, status, created_at)
+     VALUES ($1, $2, $3, $4, $5, $6, 'pending', NOW()) RETURNING *`,
+    [user_id, description, location, category, landmark, urgency]
   );
   return res.rows[0];
 };

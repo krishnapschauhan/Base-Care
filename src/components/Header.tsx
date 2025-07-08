@@ -1,12 +1,43 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Home, FileText, Search, Info } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const Header = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [role, setRole] = useState<string | null>(null);
+
+  const isDashboard =
+    location.pathname.includes("/dashboard") ||
+    location.pathname.includes("/admin") ||
+    location.pathname.includes("/worker") ||
+    location.pathname.includes("/user");
+
+  const isHomePage = location.pathname === "/";
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    if (user?.role) setRole(user.role);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    if (role === "admin") {
+      navigate("/login/admin", { replace: true });
+    } else if (role === "worker") {
+      navigate("/login/worker", { replace: true });
+    } else {
+      navigate("/login/user", { replace: true });
+    }
+  };
+
   const navItems = [
     { name: "Home", path: "/", icon: Home },
     { name: "Report an Issue", path: "/report", icon: FileText },
     { name: "Report Status", path: "/status", icon: Search },
-    { name: "About Us", path: "/about", icon: Info },
+    ...(isHomePage ? [{ name: "About Us", path: "/about", icon: Info }] : []), // ✅ Only show on home page
   ];
 
   return (
@@ -21,6 +52,7 @@ const Header = () => {
               Discipline. Report. Resolve.
             </p>
           </div>
+
           <div className="flex flex-wrap justify-center gap-4">
             {navItems.map((item) => (
               <NavLink
@@ -40,6 +72,16 @@ const Header = () => {
                 </div>
               </NavLink>
             ))}
+
+            {/* ✅ Logout shown only in dashboard pages */}
+            {isDashboard && (
+              <button
+                onClick={handleLogout}
+                className="px-5 py-2 rounded-full font-semibold text-white hover:text-red-100 hover:bg-red-600 bg-red-500 transition-all duration-300"
+              >
+                🚪 Logout
+              </button>
+            )}
           </div>
         </div>
       </nav>

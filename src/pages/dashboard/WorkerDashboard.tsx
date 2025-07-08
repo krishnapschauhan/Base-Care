@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import api from "@/lib/api";
 import Header from "@/components/Header";
 
@@ -7,6 +8,7 @@ const WorkerDashboard = () => {
   const [tasks, setTasks] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<"ongoing" | "completed">("ongoing");
   const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const navigate = useNavigate();
 
   const fetchTasks = async () => {
     try {
@@ -48,25 +50,21 @@ const WorkerDashboard = () => {
 
   return (
     <>
-      {/* ✅ Navbar outside image wrapper */}
       <Header />
-
       <div className="min-h-screen bg-[url('/heroimage.jpg')] bg-cover bg-center bg-no-repeat">
-    
-      
-            {/* ✅ Light transparent overlay */}
-            <div className="min-h-screen bg-black/30 backdrop-brightness-90 p-6">
+        <div className="min-h-screen bg-black/30 backdrop-brightness-90 p-6">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="max-w-6xl mx-auto"
           >
-            <h1 className="text-4xl font-bold text-center text-yellow-700 mb-6">
+            {/* 🟡 Worker Dashboard Header */}
+            <h1 className="text-4xl font-bold text-yellow-700 text-center mb-6">
               Worker Dashboard
             </h1>
 
-            {/* ✅ Tabs */}
+            {/* 🟢 Tabs */}
             <div className="flex justify-center gap-4 mb-8">
               <button
                 className={`px-5 py-2 rounded-full text-sm font-semibold transition ${
@@ -90,13 +88,13 @@ const WorkerDashboard = () => {
               </button>
             </div>
 
-            {/* ✅ Task Cards */}
+            {/* 🔵 Task Cards */}
             <div className="grid gap-6">
               {filteredTasks.length === 0 ? (
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="text-center text-gray-700"
+                  className="text-center text-white"
                 >
                   {activeTab === "ongoing"
                     ? "🚫 No tasks assigned or all tasks completed."
@@ -115,13 +113,12 @@ const WorkerDashboard = () => {
                     <h2 className="text-xl font-bold text-gray-800 mb-2">
                       Task #{task.id}
                     </h2>
-                    <p className="text-gray-700 mb-1">
-                      📌 Description: {task.description}
-                    </p>
-                    <p className="text-gray-700 mb-1">
-                      📍 Location: {task.location}
-                    </p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-gray-700 mb-1">📌 Description: {task.description}</p>
+                    <p className="text-gray-700 mb-1">📍 Location: {task.location}</p>
+                    <p className="text-gray-700 mb-1">🏷 Category: {task.category || "N/A"}</p>
+                    <p className="text-gray-700 mb-1">🧭 Landmark: {task.landmark || "N/A"}</p>
+                    <p className="text-gray-700 mb-1">⚡ Urgency: {task.urgency || "Normal"}</p>
+                    <p className="text-sm text-gray-600 mb-2">
                       🕒 Status:{" "}
                       <span
                         className={`inline-block px-2 py-1 rounded-full text-white text-xs ${
