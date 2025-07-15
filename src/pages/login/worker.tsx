@@ -19,14 +19,14 @@ const WorkerLogin = () => {
       const { token, user } = response.data;
 
       if (user.role !== "worker") {
-        alert("Access denied: not a worker account.");
+        alert("❌ Access denied: You are not a worker.");
         return;
       }
 
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
-      alert("✅ Login successful!");
+      alert("✅ Worker login successful!");
       navigate("/worker/dashboard");
     } catch (err: any) {
       alert(err.response?.data?.message || "Login failed");
@@ -34,8 +34,8 @@ const WorkerLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-yellow-50 to-orange-100">
-      <div className="bg-white shadow-lg rounded-xl p-10 w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-yellow-200 to-orange-300">
+      <div className="relative bg-white/80 backdrop-blur-lg border border-white/30 rounded-3xl shadow-xl w-full max-w-md p-8 md:p-10 animate-fade-in-down">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Worker Login</h2>
         <form className="space-y-5" onSubmit={handleLogin}>
           <div>
@@ -44,8 +44,8 @@ const WorkerLogin = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
-              placeholder="Enter your email"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              placeholder="worker@example.com"
               required
             />
           </div>
@@ -55,14 +55,14 @@ const WorkerLogin = () => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
-              placeholder="Enter password"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              placeholder="••••••••"
               required
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-2 rounded-md"
+            className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-2 rounded-lg shadow-md transition"
           >
             Login
           </button>

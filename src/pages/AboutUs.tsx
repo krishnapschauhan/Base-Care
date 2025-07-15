@@ -1,101 +1,169 @@
-import React from "react";
-import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
+import { UserCircle2, Github, Linkedin } from "lucide-react";
+import { motion } from "framer-motion";
 
 const team = [
   {
-    name: "Krishna Pratap Singh CHauhan",
-    role: "Team Lead & Full Stack Developer",
-    image: "https://randomuser.me/api/portraits/men/45.jpg",
+    name: "Krishna Pratap Singh Chauhan",
+    role: "Full Stack Developer",
+    branch: "Computer Science and Engineering",
+    motive: "Building meaningful software that solves real problems.",
+    github: "https://github.com/krishnapratap509",
+    linkedin: "https://linkedin.com/in/krishnapratap509",
   },
   {
-    name: "Kartikeya SHarma",
+    name: "Kartikeya Sharma",
     role: "Frontend Developer",
-    image: "https://randomuser.me/api/portraits/men/64.jpg",
+    branch: "Computer Science and Engineering",
+    motive: "Designing intuitive and elegant user interfaces.",
+    github: "https://github.com/kartikeyasharma",
+    linkedin: "https://linkedin.com/in/kartikeyasharma",
   },
   {
     name: "Deeksha Sharma",
     role: "Backend Developer",
-    image: "https://randomuser.me/api/portraits/women/68.jpg",
+    branch: "Computer Science and Engineering",
+    motive: "Creating reliable systems that run efficiently.",
+    github: "https://github.com/deeksha-sharma",
+    linkedin: "https://linkedin.com/in/deeksha-sharma",
   },
   {
     name: "Shivani Tyagi",
     role: "UI/UX Designer",
-    image: "https://randomuser.me/api/portraits/women/75.jpg",
+    branch: "Computer Science and Engineering",
+    motive: "Crafting user-centric designs for better experience.",
+    github: "https://github.com/shivanityagi",
+    linkedin: "https://linkedin.com/in/shivanityagi",
   },
 ];
 
 const AboutUs = () => {
+  const navigate = useNavigate();
+
   return (
-    <>
-      <Header />
-      <div className="min-h-screen bg-gradient-to-br from-sky-50 to-blue-100 py-16 px-6">
-        {/* Hero Section */}
-        <motion.div
-          initial={{ opacity: 0, y: -30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-5xl font-bold text-indigo-800">About Us</h1>
-          <p className="text-gray-600 mt-4 text-lg max-w-3xl mx-auto">
-            We are a team of passionate developers working on a modern, efficient issue-reporting platform for army bases.
+<div
+  className="min-h-screen bg-no-repeat bg-top bg-fixed relative text-white"
+  style={{
+    backgroundImage: "url('/aboutus.jpg')",
+    backgroundSize: "100% auto", // full width, proportional height
+    backgroundPosition: "top center",
+  }}
+>
+     {/* Dark Overlay */}
+      <div className="absolute inset-0 bg-black/60 z-0" />
+
+      {/* Content */}
+      <div className="relative z-10">
+        <Header />
+
+        {/* Hero */}
+        <section className="py-20 text-center px-4">
+          <h1 className="text-5xl font-bold mb-4">About Base Care</h1>
+          <p className="text-lg max-w-3xl mx-auto">
+            Base Care is a digital complaint management system designed for army base communities. It streamlines issue reporting, task assignment, and resolution tracking — ensuring speed, accountability, and clarity in maintenance processes.
           </p>
-        </motion.div>
+        </section>
 
-        {/* Team Cards */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto"
-        >
-          {team.map((member, index) => (
-            <motion.div
-              key={index}
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 200 }}
-              className="bg-white p-6 rounded-xl shadow-lg text-center border border-gray-200"
-            >
-              <img
-                src={member.image}
-                alt={member.name}
-                className="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-4 border-indigo-200"
-              />
-              <h3 className="text-xl font-semibold text-gray-800">{member.name}</h3>
-              <p className="text-sm text-gray-500">{member.role}</p>
-            </motion.div>
-          ))}
-        </motion.div>
+        {/* Team Section */}
+        <section className="py-20 text-center">
+          <h2 className="text-4xl font-bold text-indigo-300 mb-12">Meet the Team</h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 max-w-7xl mx-auto px-6">
+            {team.map((member, index) => (
+              <motion.div
+                key={index}
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 200 }}
+                className="bg-white/10 p-6 rounded-2xl shadow-lg text-white border border-white/20 backdrop-blur"
+              >
+                <div className="flex justify-center mb-4">
+                  <UserCircle2 className="w-20 h-20 text-indigo-400" />
+                </div>
+                <h3 className="text-xl font-semibold">{member.name}</h3>
+                <p className="text-sm text-indigo-200 mb-1">{member.role}</p>
+                <p className="text-sm text-gray-300 mb-3">{member.branch}</p>
+                <p className="text-gray-200 text-sm italic mb-4">"{member.motive}"</p>
+                <div className="flex justify-center gap-4 mt-2">
+                  <a
+                    href={member.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-sm text-indigo-200 hover:underline"
+                  >
+                    <Github className="w-4 h-4 mr-1" /> GitHub
+                  </a>
+                  <a
+                    href={member.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-sm text-indigo-200 hover:underline"
+                  >
+                    <Linkedin className="w-4 h-4 mr-1" /> LinkedIn
+                  </a>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </section>
 
-        {/* Description Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="max-w-5xl mx-auto mt-20 text-center"
-        >
-          <h2 className="text-3xl font-semibold text-indigo-800 mb-4">Our Mission</h2>
-          <p className="text-gray-700 text-lg leading-relaxed">
-            Our goal is to simplify complaint reporting and resolution processes for army personnel. With BaseCare, we ensure clarity,
-            accountability, and timely action — through smart dashboards, secure access, and real-time task tracking.
+        {/* Tech Stack */}
+        <section className="py-20 text-center px-6">
+          <h2 className="text-3xl font-bold text-indigo-300 mb-6">Tech Stack</h2>
+          <p className="text-lg max-w-3xl mx-auto mb-8 text-gray-200">
+            Built using modern technologies for speed, security, and scalability.
           </p>
-        </motion.div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+            {[
+              "React.js",
+              "TypeScript",
+              "Tailwind CSS",
+              "Framer Motion",
+              "Node.js",
+              "Express.js",
+              "PostgreSQL",
+              "pgAdmin",
+              "JWT",
+              "GitHub",
+            ].map((tech, index) => (
+              <div
+                key={index}
+                className="bg-white/10 py-3 px-4 rounded-lg shadow-sm text-white font-medium border border-white/10"
+              >
+                {tech}
+              </div>
+            ))}
+          </div>
+        </section>
 
-        {/* Call to Action */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.5 }}
-          className="mt-16 text-center"
-        >
-          <p className="text-gray-700 text-lg mb-3">Want to know more or contribute?</p>
-          <button className="px-6 py-3 bg-indigo-700 text-white rounded-full hover:bg-indigo-800 transition font-medium">
-            Contact Us
-          </button>
-        </motion.div>
+        {/* Project Summary */}
+        <section className="py-20 text-center px-6">
+          <h2 className="text-3xl font-bold text-indigo-300 mb-6">Project Summary & Usage</h2>
+          <p className="text-lg max-w-4xl mx-auto text-gray-200 leading-relaxed">
+            Base Care includes separate portals for Users, Admins, and Workers. Users report issues, Admins assign tasks, and Workers resolve them. It covers key categories like water, electricity, sanitation, and roads — helping improve life inside army base communities.
+          </p>
+        </section>
+
+        {/* Contact Us */}
+        <section className="py-20 text-center px-6">
+          <h2 className="text-3xl font-bold text-indigo-300 mb-6">Contact Us</h2>
+          <p className="text-lg mb-2 text-gray-200">📧 basecare@army.org</p>
+          <p className="text-lg mb-6 text-gray-200">🌐 www.basecare.army</p>
+          <a
+            href="https://github.com/krishnapratap509/base-care"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-indigo-600 text-white px-6 py-3 rounded-full hover:bg-indigo-700 transition font-medium"
+          >
+            View Project on GitHub
+          </a>
+        </section>
+
+        {/* Footer */}
+        <footer className="bg-black bg-opacity-70 py-10 text-white text-center">
+          <p className="text-sm">© 2025 Base Care – Every report strengthens the mission.</p>
+        </footer>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -11,14 +11,9 @@ const AdminLogin = () => {
     e.preventDefault();
 
     try {
-      const response = await api.post("/auth/login", {
-        email,
-        password,
-      });
-
+      const response = await api.post("/auth/login", { email, password });
       const { token, user } = response.data;
 
-      // 🛡️ Ensure only admins are allowed
       if (user.role !== "admin") {
         alert("❌ Access denied: You are not an admin.");
         return;
@@ -35,8 +30,8 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-50 to-indigo-100">
-      <div className="bg-white shadow-lg rounded-xl p-10 w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-200 to-indigo-300">
+      <div className="relative bg-white/80 backdrop-blur-lg border border-white/30 rounded-3xl shadow-xl w-full max-w-md p-8 md:p-10 animate-fade-in-down">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Admin Login</h2>
         <form className="space-y-5" onSubmit={handleLogin}>
           <div>
@@ -45,7 +40,7 @@ const AdminLogin = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
               placeholder="admin@example.com"
               required
             />
@@ -56,14 +51,14 @@ const AdminLogin = () => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
               placeholder="••••••••"
               required
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 rounded-md"
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 rounded-lg shadow-md transition"
           >
             Login
           </button>
