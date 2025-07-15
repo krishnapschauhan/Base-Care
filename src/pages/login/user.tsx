@@ -1,11 +1,15 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import api from "@/lib/api"; // your axios instance
+import { useNavigate, useLocation } from "react-router-dom";
+import api from "@/lib/api";
 
 const UserLogin = () => {
-  const [email, setEmail] = useState(""); // changed from username
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // ✅ Fallback route: if user came from "/status", return them there. Otherwise go to dashboard.
+  const redirectPath = location.state?.from || "/user/dashboard";
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,20 +22,23 @@ const UserLogin = () => {
 
       const { token, user } = response.data;
 
-      // ✅ Only allow users to log in from this page
       if (user.role !== "user") {
         alert("Access denied. You are not a user.");
         return;
       }
 
-      // Save token and user info
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
       alert("✅ Login successful!");
-      navigate("/user/dashboard");
-    } catch (err: any) {
-      alert(err.response?.data?.message || "Login failed");
+      navigate(redirectPath, { replace: true }); // redirect to intended page
+    } catch (err: unknown) {
+      if (err && typeof err === "object" && "response" in err) {
+        const error = err as { response?: { data?: { message?: string } } };
+        alert(error.response?.data?.message || "Login failed");
+      } else {
+        alert("Login failed due to unknown error.");
+      }
     }
   };
 

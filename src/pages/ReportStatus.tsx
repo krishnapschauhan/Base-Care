@@ -4,10 +4,17 @@ import { motion } from "framer-motion";
 import api from "@/lib/api";
 import Header from "@/components/Header";
 
-const Status = () => {
-  const [reports, setReports] = useState([]);
-  const navigate = useNavigate();
+type Report = {
+  id: number;
+  location: string;
+  description: string;
+  status: string;
+  created_at: string;
+};
 
+const ReportStatuss = () => {
+  const [reports, setReports] = useState<Report[]>([]);
+  const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   const fetchReports = async () => {
@@ -26,7 +33,6 @@ const Status = () => {
     } catch (err) {
       console.error("Failed to fetch status reports:", err);
       alert("Please login to view your report status.");
-      navigate("/login/user");
     }
   };
 
@@ -34,17 +40,16 @@ const Status = () => {
     fetchReports();
   }, []);
 
-  const pending = reports.filter((r: any) => r.status !== "completed");
-  const completed = reports.filter((r: any) => r.status === "completed");
+  const pending = reports.filter((r: Report) => r.status !== "completed");
+  const completed = reports.filter((r: Report) => r.status === "completed");
 
   return (
     <>
       <Header />
-
       <div className="min-h-screen bg-[url('/heroimage.jpg')] bg-cover bg-center bg-no-repeat">
-        <div className="min-h-screen bg-black/30 backdrop-brightness-90 px-6 py-12">
+        <div className="min-h-screen bg-black/30 backdrop-brightness-90 p-6">
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="max-w-6xl mx-auto"
@@ -54,14 +59,16 @@ const Status = () => {
             </h1>
 
             {/* 🚧 Pending Section */}
-            <h2 className="text-2xl text-yellow-300 font-semibold mb-4">🚧 Pending / Assigned Complaints</h2>
+            <h2 className="text-2xl text-yellow-300 font-semibold mb-4">
+              🚧 Pending / Assigned Complaints
+            </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
               {pending.length === 0 ? (
                 <p className="text-white text-lg col-span-full italic">
                   No active complaints right now.
                 </p>
               ) : (
-                pending.map((report: any) => (
+                pending.map((report: Report) => (
                   <motion.div
                     key={report.id}
                     whileHover={{ scale: 1.03 }}
@@ -69,11 +76,8 @@ const Status = () => {
                     className="bg-white/90 backdrop-blur-lg p-5 rounded-xl shadow-md border border-gray-200"
                   >
                     <h3 className="text-xl font-bold text-blue-800 mb-2">#{report.id}</h3>
-                    <p><strong>📌 Category:</strong> {report.category}</p>
                     <p><strong>📍 Location:</strong> {report.location}</p>
                     <p><strong>📝 Description:</strong> {report.description}</p>
-                    <p><strong>📍 Landmark:</strong> {report.landmark}</p>
-                    <p><strong>⚠️ Urgency:</strong> {report.urgency}</p>
                     <p className="mt-2">
                       <span
                         className={`px-3 py-1 rounded-full text-white text-xs font-medium ${
@@ -94,14 +98,16 @@ const Status = () => {
             </div>
 
             {/* ✅ Completed Section */}
-            <h2 className="text-2xl text-green-400 font-semibold mb-4">✅ Completed Complaints</h2>
+            <h2 className="text-2xl text-green-400 font-semibold mb-4">
+              ✅ Completed Complaints
+            </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {completed.length === 0 ? (
                 <p className="text-white text-lg col-span-full italic">
                   No completed complaints yet.
                 </p>
               ) : (
-                completed.map((report: any) => (
+                completed.map((report: Report) => (
                   <motion.div
                     key={report.id}
                     whileHover={{ scale: 1.03 }}
@@ -109,11 +115,8 @@ const Status = () => {
                     className="bg-white/90 backdrop-blur-lg p-5 rounded-xl shadow-md border border-gray-200"
                   >
                     <h3 className="text-xl font-bold text-green-700 mb-2">#{report.id}</h3>
-                    <p><strong>📌 Category:</strong> {report.category}</p>
                     <p><strong>📍 Location:</strong> {report.location}</p>
                     <p><strong>📝 Description:</strong> {report.description}</p>
-                    <p><strong>📍 Landmark:</strong> {report.landmark}</p>
-                    <p><strong>⚠️ Urgency:</strong> {report.urgency}</p>
                     <p className="mt-2">
                       <span className="px-3 py-1 rounded-full text-white text-xs font-medium bg-green-600">
                         COMPLETED
@@ -133,4 +136,4 @@ const Status = () => {
   );
 };
 
-export default Status;
+export default ReportStatuss;
