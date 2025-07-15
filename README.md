@@ -53,7 +53,7 @@ Base Care is a smart complaint and service management system that connects users
 ## 📫 Contact Us
 
 - GitHub: [@krishnapschauhan](https://github.com/krishnapschauhan)  
-- Email: krishnapschauhan@example.com (replace with real email)
+- Email: krishnachauhan09875@gmail.com
 
 ---
 
