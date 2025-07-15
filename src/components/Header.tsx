@@ -1,13 +1,13 @@
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { Home, FileText, Search, Info, LogOut } from "lucide-react";
+import { Home, FileText, Search, Info, LogOut, Menu } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [role, setRole] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  // ✅ Detect route changes and update role
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
     setRole(user?.role || null);
@@ -21,8 +21,6 @@ const Header = () => {
   };
 
   const isHomePage = location.pathname === "/";
-
-  // ✅ Treat homepage as dashboard if user is logged in
   const isDashboard =
     location.pathname.includes("/dashboard") ||
     location.pathname.includes("/admin") ||
@@ -31,7 +29,6 @@ const Header = () => {
     location.pathname.includes("/status") ||
     (!!role && isHomePage);
 
-  // ✅ Dynamic nav items based on role and location
   const navItems = [
     { name: "Home", path: "/", icon: Home },
     {
@@ -56,18 +53,27 @@ const Header = () => {
 
   return (
     <header className="bg-black text-white">
-      <nav className="container mx-auto px-6 py-6">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
-          <div className="text-center lg:text-left">
-            <h1 className="text-2xl lg:text-3xl font-bold text-white">
+      <nav className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
               BaseCare: Army Issue Reporting
             </h1>
-            <p className="text-gray-400 text-base lg:text-lg font-medium tracking-wide">
+            <p className="text-gray-400 text-sm sm:text-base font-medium">
               Discipline. Report. Resolve.
             </p>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-4">
+          {/* Hamburger button for mobile */}
+          <button
+            className="lg:hidden p-2 text-white"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            <Menu className="h-6 w-6" />
+          </button>
+
+          {/* Desktop nav */}
+          <div className="hidden lg:flex flex-wrap items-center gap-4">
             {navItems.map((item) => (
               <NavLink
                 key={item.name}
@@ -86,7 +92,6 @@ const Header = () => {
                 </div>
               </NavLink>
             ))}
-
             {isDashboard && (
               <button
                 onClick={handleLogout}
@@ -98,6 +103,43 @@ const Header = () => {
             )}
           </div>
         </div>
+
+        {/* Mobile menu dropdown */}
+        {menuOpen && (
+          <div className="mt-4 flex flex-col gap-3 lg:hidden">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.name}
+                to={item.path}
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  `group relative px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                    isActive
+                      ? "bg-white text-black"
+                      : "text-gray-300 hover:text-white hover:bg-white/10 border border-white/10"
+                  }`
+                }
+              >
+                <div className="flex items-center space-x-2">
+                  <item.icon className="w-4 h-4" />
+                  <span className="text-sm">{item.name}</span>
+                </div>
+              </NavLink>
+            ))}
+            {isDashboard && (
+              <button
+                onClick={() => {
+                  setMenuOpen(false);
+                  handleLogout();
+                }}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white bg-black border border-white/20 hover:bg-white/10"
+              >
+                <LogOut className="w-4 h-4" />
+                Logout
+              </button>
+            )}
+          </div>
+        )}
       </nav>
     </header>
   );
