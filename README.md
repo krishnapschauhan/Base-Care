@@ -41,17 +41,6 @@ Base Care is a smart complaint and service management system that connects users
 
 ---
 
-## 🧑‍💻 Authors
-
-| Name                         | Role                 | Branch                           | Motive                                                  | GitHub                                        | LinkedIn                                             |
-| ---------------------------- | -------------------- | -------------------------------- | ------------------------------------------------------- | --------------------------------------------- | ---------------------------------------------------- |
-| Krishna Pratap Singh Chauhan | Full Stack Developer | Computer Science and Engineering | Building meaningful software that solves real problems. | [GitHub](https://github.com/krishnapratap509) | [LinkedIn](https://linkedin.com/in/krishnapratap509) |
-| Kartikeya Sharma             | Frontend Developer   | Computer Science and Engineering | Designing intuitive and elegant user interfaces.        | [GitHub](https://github.com/kartikeyasharma)  | [LinkedIn](https://linkedin.com/in/kartikeyasharma)  |
-| Deeksha Sharma               | Backend Developer    | Computer Science and Engineering | Creating reliable systems that run efficiently.         | [GitHub](https://github.com/deeksha-sharma)   | [LinkedIn](https://linkedin.com/in/deeksha-sharma)   |
-| Shivani Tyagi                | UI/UX Designer       | Computer Science and Engineering | Crafting user-centric designs for better experience.    | [GitHub](https://github.com/shivanityagi)     | [LinkedIn](https://linkedin.com/in/shivanityagi)     |
-
----
-
 ## 📫 Contact Us
 
 - GitHub: [@krishnapschauhan](https://github.com/krishnapschauhan)  
