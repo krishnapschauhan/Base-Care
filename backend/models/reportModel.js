@@ -1,12 +1,27 @@
 const db = require("../config/mydb");
 
+// ✅ Helper function to provide default values
+const toDefault = (value, fallback) => {
+  if (value === undefined || value === null || value.toString().trim() === "") {
+    return fallback;
+  }
+  return value.toString().trim();
+};
+
 // ✅ Create/Submit a new report with extended fields
 const submitReport = async (user_id, description, location, category, landmark, urgency) => {
+  const finalCategory = toDefault(category, "N/A");
+  const finalLandmark = toDefault(landmark, "N/A");
+  const finalUrgency = toDefault(urgency, "Low");
+
   const res = await db.query(
-    `INSERT INTO reports (user_id, description, location, category, landmark, urgency, status, created_at)
-     VALUES ($1, $2, $3, $4, $5, $6, 'pending', NOW()) RETURNING *`,
-    [user_id, description, location, category, landmark, urgency]
+    `INSERT INTO reports 
+     (user_id, description, location, category, landmark, urgency, status, created_at)
+     VALUES ($1, $2, $3, $4, $5, $6, 'pending', NOW())
+     RETURNING *`,
+    [user_id, description.trim(), location.trim(), finalCategory, finalLandmark, finalUrgency]
   );
+
   return res.rows[0];
 };
 

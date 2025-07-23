@@ -4,13 +4,25 @@ import { useNavigate } from "react-router-dom";
 import api from "@/lib/api";
 import Header from "@/components/Header";
 
+// ✅ Define the Report type
+type Report = {
+  id: number;
+  description: string;
+  location: string;
+  category: string;
+  landmark: string;
+  urgency: string;
+  status: string;
+  created_at: string;
+};
+
 const UserDashboard = () => {
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
   const [category, setCategory] = useState("Electrical");
   const [landmark, setLandmark] = useState("");
   const [urgency, setUrgency] = useState("Normal");
-  const [reports, setReports] = useState([]);
+  const [reports, setReports] = useState<Report[]>([]);
   const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -31,28 +43,39 @@ const UserDashboard = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
+
       await api.post(
         "/reports",
         {
-          description,
-          location,
-          category,
-          landmark,
-          urgency,
+          description: description.trim(),
+          location: location.trim(),
+          category: category?.trim() || "N/A",
+          landmark: landmark?.trim() || "N/A",
+          urgency: urgency?.trim() || "Low",
         },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+
       alert("Report submitted successfully");
+
+      // Reset form
       setDescription("");
       setLocation("");
       setCategory("Electrical");
       setLandmark("");
       setUrgency("Normal");
+
       fetchReports();
-    } catch (err: any) {
-      alert(err.response?.data?.message || "Failed to submit report");
+    } catch (err: unknown) {
+      if (typeof err === "object" && err !== null && "response" in err) {
+        // Type assertion to access response.data safely
+        const axiosErr = err as { response?: { data?: { message?: string } } };
+        alert(axiosErr.response?.data?.message || "Failed to submit report");
+      } else {
+        alert("Failed to submit report");
+      }
     }
   };
 
@@ -65,7 +88,6 @@ const UserDashboard = () => {
 
   return (
     <div className="min-h-screen bg-[url('/heroimage.jpg')] bg-cover bg-center bg-no-repeat">
-      {/* ✅ Dashboard Navbar with Logout */}
       <Header />
 
       <div className="min-h-screen bg-black/30 backdrop-brightness-90 p-6">

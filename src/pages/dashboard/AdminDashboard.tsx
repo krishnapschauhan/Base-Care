@@ -4,18 +4,45 @@ import { useNavigate } from "react-router-dom";
 import api from "@/lib/api";
 import Header from "@/components/Header";
 
+type Report = {
+  id: number;
+  description: string;
+  location: string;
+  category?: string;
+  landmark?: string;
+  urgency?: string;
+  workername?: string;
+  created_at: string;
+  status: string;
+};
+
+type Worker = {
+  id: number;
+  name: string;
+  email: string;
+};
+
 const AdminDashboard = () => {
-  const [reports, setReports] = useState<any[]>([]);
-  const [filteredReports, setFilteredReports] = useState<any[]>([]);
-  const [workers, setWorkers] = useState<any[]>([]);
-  const [selectedStatus, setSelectedStatus] = useState("all");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
+  const [reports, setReports] = useState<Report[]>([]);
+  const [workers, setWorkers] = useState<Worker[]>([]);
   const [selectedWorkerId, setSelectedWorkerId] = useState<number | null>(null);
+  const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
+  const [showModal, setShowModal] = useState(false);
   const [activeTab, setActiveTab] = useState("pending");
 
   const navigate = useNavigate();
+
+  // 🔐 Redirect to login if not authenticated
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+
+    if (!token || user?.role !== "admin") {
+      navigate("/login/admin", { replace: true });
+    } else {
+      fetchReports();
+    }
+  }, []);
 
   const fetchReports = async () => {
     try {
@@ -24,7 +51,6 @@ const AdminDashboard = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setReports(res.data);
-      setFilteredReports(res.data);
     } catch (err) {
       console.error("Failed to fetch reports", err);
     }
@@ -44,15 +70,15 @@ const AdminDashboard = () => {
 
   const handleAssign = async () => {
     try {
-      const confirm = window.confirm("Assign this report to the selected worker?");
-      if (!confirm) return;
-
-      const token = localStorage.getItem("token");
       if (!selectedReportId || !selectedWorkerId) {
-        alert("Please select a worker.");
+        alert("⚠️ Please select a worker.");
         return;
       }
 
+      const confirmed = window.confirm("Assign this report to the selected worker?");
+      if (!confirmed) return;
+
+      const token = localStorage.getItem("token");
       await api.post(
         "/reports/assign",
         { reportId: selectedReportId, workerId: selectedWorkerId },
@@ -72,16 +98,12 @@ const AdminDashboard = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    navigate("/login/admin", { replace: true }); // ✅ Prevents back button return
+    navigate("/login/admin", { replace: true }); // ⛔ Prevents back nav
   };
 
-  useEffect(() => {
-    fetchReports();
-  }, []);
-
-  const filteredByTab = reports.filter((r) => {
-    return activeTab === "all" || r.status === activeTab;
-  });
+  const filteredByTab = reports.filter((report) =>
+    activeTab === "all" ? true : report.status === activeTab
+  );
 
   return (
     <>
@@ -99,13 +121,13 @@ const AdminDashboard = () => {
               Admin Dashboard
             </h1>
 
-            {/* Filter Buttons */}
+            {/* 🔍 Filter Tabs */}
             <div className="flex justify-center gap-4 mb-8">
               {["pending", "assigned", "completed", "all"].map((status) => (
                 <button
                   key={status}
                   onClick={() => setActiveTab(status)}
-                  className={`px-4 py-2 rounded-full font-semibold ${
+                  className={`px-4 py-2 rounded-full font-semibold transition ${
                     activeTab === status
                       ? "bg-white text-black"
                       : "bg-gray-200 text-gray-600 hover:bg-white"
@@ -116,7 +138,7 @@ const AdminDashboard = () => {
               ))}
             </div>
 
-            {/* Report Cards */}
+            {/* 📋 Report Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredByTab.map((report) => (
                 <motion.div
@@ -145,9 +167,7 @@ const AdminDashboard = () => {
                   </p>
                   <p className="text-gray-700 mb-1">
                     <strong>👷 Assigned To:</strong>{" "}
-                    {report.workername || (
-                      <span className="italic text-gray-400">Unassigned</span>
-                    )}
+                    {report.workername || <span className="italic text-gray-400">Unassigned</span>}
                   </p>
                   <p className="text-gray-700 mb-1">
                     <strong>🕒 Submitted:</strong>{" "}
@@ -168,6 +188,7 @@ const AdminDashboard = () => {
                     </span>
                   </p>
 
+                  {/* Assign Button */}
                   {report.status !== "completed" && (
                     <button
                       onClick={() => {
@@ -184,13 +205,11 @@ const AdminDashboard = () => {
               ))}
             </div>
 
-            {/* Modal */}
+            {/* 📦 Modal */}
             {showModal && (
               <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
                 <div className="bg-white p-6 rounded-xl shadow-lg max-w-md w-full">
-                  <h3 className="text-xl font-bold mb-4 text-indigo-700">
-                    Assign to Worker
-                  </h3>
+                  <h3 className="text-xl font-bold mb-4 text-indigo-700">Assign to Worker</h3>
                   <select
                     onChange={(e) => setSelectedWorkerId(Number(e.target.value))}
                     className="w-full mb-4 px-3 py-2 border rounded-md"

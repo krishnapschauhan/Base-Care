@@ -21,7 +21,7 @@ const ReportStatuss = () => {
     try {
       const token = localStorage.getItem("token");
       if (!token || !user.id) {
-        navigate("/login/user");
+        navigate("/login/user", { replace: true }); // 👈 fixes back button issue
         return;
       }
 
@@ -58,7 +58,6 @@ const ReportStatuss = () => {
               📋 Your Complaint Status
             </h1>
 
-            {/* 🚧 Pending Section */}
             <h2 className="text-2xl text-yellow-300 font-semibold mb-4">
               🚧 Pending / Assigned Complaints
             </h2>
@@ -97,7 +96,6 @@ const ReportStatuss = () => {
               )}
             </div>
 
-            {/* ✅ Completed Section */}
             <h2 className="text-2xl text-green-400 font-semibold mb-4">
               ✅ Completed Complaints
             </h2>

@@ -5,7 +5,7 @@ const dotenv = require("dotenv");
 // Load environment variables from .env
 dotenv.config();
 
-// ✅ Import route files
+//  Import route files
 const authRoutes = require("./routes/authRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const reportRoutes = require("./routes/reportRoutes");
@@ -14,21 +14,26 @@ const taskRoutes = require("./routes/taskRoutes");
 
 const app = express();
 
-// ✅ Global Middleware
+//  Global Middleware
 app.use(cors());               // Allow cross-origin requests
 app.use(express.json());       // Enable JSON request body parsing
 
-// ✅ API Route Mappings
+// API Route Mappings
 app.use("/api/auth", authRoutes);         // Login / Registration
 app.use("/api/admin", adminRoutes);       // Admin-related endpoints
 app.use("/api/reports", reportRoutes);    // Report/Complaint endpoints
 app.use("/api/worker", workerRoutes);     // Worker dashboard/task list
 app.use("/api/tasks", taskRoutes);        // Task management (assign/update)
 
-// ✅ Health Check (Optional)
+// Health Check (Optional)
 app.get("/", (req, res) => {
-  res.send("✅ Urban Alert Backend is running...");
+  res.send("Backend is running...");
 });
+
+//
+const listEndpoints = require("express-list-endpoints");
+console.log(listEndpoints(app));
+
 
 // ✅ Start the server
 const PORT = process.env.PORT || 5000;

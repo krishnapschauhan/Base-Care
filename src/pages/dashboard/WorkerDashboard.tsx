@@ -5,7 +5,7 @@ import api from "@/lib/api";
 import Header from "@/components/Header";
 
 const WorkerDashboard = () => {
-  const [tasks, setTasks] = useState<any[]>([]);
+  const [tasks, setTasks] = useState<err[]>([]);
   const [activeTab, setActiveTab] = useState<"ongoing" | "completed">("ongoing");
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const navigate = useNavigate();
@@ -38,11 +38,18 @@ const WorkerDashboard = () => {
     }
   };
 
+  // ✅ Secure logout with replace
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login/worker", { replace: true });
+  };
+
   useEffect(() => {
     fetchTasks();
   }, []);
 
-  const filteredTasks = tasks.filter((task: any) =>
+  const filteredTasks = tasks.filter((task: err) =>
     activeTab === "ongoing"
       ? task.assigned_to === user.id && task.status !== "completed"
       : task.assigned_to === user.id && task.status === "completed"
@@ -50,7 +57,8 @@ const WorkerDashboard = () => {
 
   return (
     <>
-      <Header />
+      <Header onLogout={handleLogout} />
+
       <div className="min-h-screen bg-[url('/heroimage.jpg')] bg-cover bg-center bg-no-repeat">
         <div className="min-h-screen bg-black/30 backdrop-brightness-90 p-6">
           <motion.div
@@ -59,12 +67,10 @@ const WorkerDashboard = () => {
             transition={{ duration: 0.6 }}
             className="max-w-6xl mx-auto"
           >
-            {/* 🟡 Worker Dashboard Header */}
             <h1 className="text-4xl font-bold text-yellow-700 text-center mb-6">
               Worker Dashboard
             </h1>
 
-            {/* 🟢 Tabs */}
             <div className="flex justify-center gap-4 mb-8">
               <button
                 className={`px-5 py-2 rounded-full text-sm font-semibold transition ${
@@ -88,7 +94,6 @@ const WorkerDashboard = () => {
               </button>
             </div>
 
-            {/* 🔵 Task Cards */}
             <div className="grid gap-6">
               {filteredTasks.length === 0 ? (
                 <motion.p
@@ -101,7 +106,7 @@ const WorkerDashboard = () => {
                     : "✅ No completed tasks yet."}
                 </motion.p>
               ) : (
-                filteredTasks.map((task: any, index: number) => (
+                filteredTasks.map((task: err, index: number) => (
                   <motion.div
                     key={task.id}
                     initial={{ opacity: 0, y: 20 }}

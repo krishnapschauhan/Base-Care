@@ -9,15 +9,13 @@ const {
 // ✅ Controller: Submit a report (for user)
 exports.submitReport = async (req, res) => {
   try {
-    const { description, location, category, landmark, urgency } = req.body;
-    const userId = req.user.id;
+    const { description, location, category,landmark,urgency } = req.body;
 
-    // Validate required fields
-    if (!description || !location || !category || !urgency) {
-      return res.status(400).json({ message: "Description, location, category, and urgency are required." });
+    if (!description || !location || !category || !landmark || !urgency) {
+      return res.status(400).json({ message: "All fields are required." });
     }
 
-    const report = await submitReport(userId, description, location, category, landmark, urgency);
+    const report = await submitReport(req.user.id, description, location, category, landmark, urgency);
     res.status(201).json({ message: "Report submitted successfully", report });
   } catch (err) {
     console.error("Submit Report Error:", err);
