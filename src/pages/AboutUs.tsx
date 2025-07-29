@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 const team = [
   {
     name: "Krishna Pratap Singh Chauhan",
-    role: "Full Stack Developer",
     branch: "Computer Science and Engineering",
     motive: "Building meaningful software that solves real problems.",
     github: "https://github.com/krishnapratap509",
@@ -14,7 +13,6 @@ const team = [
   },
   {
     name: "Kartikeya Sharma",
-    role: "Frontend Developer",
     branch: "Computer Science and Engineering",
     motive: "Designing intuitive and elegant user interfaces.",
     github: "https://github.com/kartikeyasharma",
@@ -22,7 +20,6 @@ const team = [
   },
   {
     name: "Deeksha Sharma",
-    role: "Backend Developer",
     branch: "Computer Science and Engineering",
     motive: "Creating reliable systems that run efficiently.",
     github: "https://github.com/deeksha-sharma",
@@ -30,7 +27,6 @@ const team = [
   },
   {
     name: "Shivani Tyagi",
-    role: "UI/UX Designer",
     branch: "Computer Science and Engineering",
     motive: "Crafting user-centric designs for better experience.",
     github: "https://github.com/shivanityagi",

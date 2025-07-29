@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const { verifyToken, authorizeRole } = require("../middleware/authMiddleware");
+const { markReportCompleted, updateAvailability } = require("../controllers/workerController");
 const db = require("../config/mydb");
 
-// ✅ GET /api/worker/tasks — Fetch all reports assigned to the logged-in worker
+// ✅ Fetch all reports assigned to the logged-in worker
 router.get("/tasks", verifyToken, authorizeRole("worker"), async (req, res) => {
   try {
     const result = await db.query(
@@ -24,5 +25,11 @@ router.get("/tasks", verifyToken, authorizeRole("worker"), async (req, res) => {
     res.status(500).json({ message: "Failed to fetch tasks" });
   }
 });
+
+// ✅ Mark report as completed
+router.put("/report/:id/complete", verifyToken, authorizeRole("worker"), markReportCompleted);
+
+// ✅ Update availability status
+router.patch("/availability", verifyToken, authorizeRole("worker"), updateAvailability);
 
 module.exports = router;

@@ -1,10 +1,10 @@
 const db = require("../config/mydb");
 
-// ✅ Get all workers (role = 'worker') – for assigning tasks
+// ✅ Get all workers (including availability status)
 const getAllWorkers = async (req, res) => {
   try {
     const result = await db.query(
-      "SELECT id, name, email FROM users WHERE role = 'worker'"
+      "SELECT id, name, email, availability FROM users WHERE role = 'worker'"
     );
     res.status(200).json(result.rows);
   } catch (err) {
@@ -33,7 +33,7 @@ const getAllReports = async (req, res) => {
   }
 };
 
-// ✅ Get all users (optional, if needed)
+// ✅ Get all regular users
 const getAllUsers = async (req, res) => {
   try {
     const result = await db.query(
@@ -49,5 +49,5 @@ const getAllUsers = async (req, res) => {
 module.exports = {
   getAllWorkers,
   getAllReports,
-  getAllUsers, // optional
+  getAllUsers,
 };

@@ -57,7 +57,7 @@ const Header = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
-              BaseCare: Army Issue Reporting
+              BaseCare: Issue Reporting
             </h1>
             <p className="text-gray-400 text-sm sm:text-base font-medium">
               Discipline. Report. Resolve.

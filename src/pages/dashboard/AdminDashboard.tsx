@@ -20,6 +20,7 @@ type Worker = {
   id: number;
   name: string;
   email: string;
+  availability: boolean;
 };
 
 const AdminDashboard = () => {
@@ -32,7 +33,7 @@ const AdminDashboard = () => {
 
   const navigate = useNavigate();
 
-  // 🔐 Redirect to login if not authenticated
+  // 🔐 Redirect to login if not admin
   useEffect(() => {
     const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("user") || "null");
@@ -44,6 +45,7 @@ const AdminDashboard = () => {
     }
   }, []);
 
+  // 📨 Fetch all reports
   const fetchReports = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -56,6 +58,7 @@ const AdminDashboard = () => {
     }
   };
 
+  // 👷 Fetch all workers
   const fetchWorkers = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -68,6 +71,7 @@ const AdminDashboard = () => {
     }
   };
 
+  // ✅ Assign worker to report
   const handleAssign = async () => {
     try {
       if (!selectedReportId || !selectedWorkerId) {
@@ -98,7 +102,7 @@ const AdminDashboard = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    navigate("/login/admin", { replace: true }); // ⛔ Prevents back nav
+    navigate("/login/admin", { replace: true });
   };
 
   const filteredByTab = reports.filter((report) =>
@@ -110,7 +114,7 @@ const AdminDashboard = () => {
       <Header onLogout={handleLogout} />
 
       <div className="min-h-screen bg-[url('/heroimage.jpg')] bg-cover bg-center bg-no-repeat">
-        <div className="min-h-screen bg-black/30 backdrop-brightness-90 p-6">
+        <div className="min-h-screen bg-black/30 p-6">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -150,40 +154,22 @@ const AdminDashboard = () => {
                   <h2 className="text-xl font-bold text-gray-800 mb-2">
                     Report #{report.id}
                   </h2>
-                  <p className="text-gray-700 mb-1">
-                    <strong>📌 Description:</strong> {report.description}
-                  </p>
-                  <p className="text-gray-700 mb-1">
-                    <strong>📍 Location:</strong> {report.location}
-                  </p>
-                  <p className="text-gray-700 mb-1">
-                    <strong>🏷 Category:</strong> {report.category || "N/A"}
-                  </p>
-                  <p className="text-gray-700 mb-1">
-                    <strong>🧭 Landmark:</strong> {report.landmark || "N/A"}
-                  </p>
-                  <p className="text-gray-700 mb-1">
-                    <strong>⚡ Urgency:</strong> {report.urgency || "Normal"}
-                  </p>
-                  <p className="text-gray-700 mb-1">
-                    <strong>👷 Assigned To:</strong>{" "}
-                    {report.workername || <span className="italic text-gray-400">Unassigned</span>}
-                  </p>
-                  <p className="text-gray-700 mb-1">
-                    <strong>🕒 Submitted:</strong>{" "}
-                    {new Date(report.created_at).toLocaleString()}
-                  </p>
+                  <p className="text-gray-700 mb-1"><strong>📌</strong> {report.description}</p>
+                  <p className="text-gray-700 mb-1"><strong>📍</strong> {report.location}</p>
+                  <p className="text-gray-700 mb-1"><strong>🏷</strong> {report.category || "N/A"}</p>
+                  <p className="text-gray-700 mb-1"><strong>🧭</strong> {report.landmark || "N/A"}</p>
+                  <p className="text-gray-700 mb-1"><strong>⚡</strong> {report.urgency || "Normal"}</p>
+                  <p className="text-gray-700 mb-1"><strong>👷 Assigned To:</strong> {report.workername || <em className="text-gray-400">Unassigned</em>}</p>
+                  <p className="text-gray-700 mb-1"><strong>🕒 Submitted:</strong> {new Date(report.created_at).toLocaleString()}</p>
                   <p className="text-gray-700">
                     <strong>Status:</strong>{" "}
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs text-white ${
-                        report.status === "pending"
-                          ? "bg-yellow-500"
-                          : report.status === "assigned"
-                          ? "bg-blue-500"
-                          : "bg-green-600"
-                      }`}
-                    >
+                    <span className={`px-2 py-1 rounded-full text-xs text-white ${
+                      report.status === "pending"
+                        ? "bg-yellow-500"
+                        : report.status === "assigned"
+                        ? "bg-blue-500"
+                        : "bg-green-600"
+                    }`}>
                       {report.status.toUpperCase()}
                     </span>
                   </p>
@@ -216,8 +202,13 @@ const AdminDashboard = () => {
                   >
                     <option value="">-- Choose a worker --</option>
                     {workers.map((worker) => (
-                      <option key={worker.id} value={worker.id}>
-                        {worker.name} ({worker.email})
+                      <option
+                        key={worker.id}
+                        value={worker.id}
+                        disabled={!worker.availability}
+                      >
+                        {worker.name} ({worker.email}){" "}
+                        {worker.availability ? "" : "— Unavailable"}
                       </option>
                     ))}
                   </select>

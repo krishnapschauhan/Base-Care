@@ -5,11 +5,13 @@ import api from "@/lib/api";
 import Header from "@/components/Header";
 
 const WorkerDashboard = () => {
-  const [tasks, setTasks] = useState<err[]>([]);
+  const [tasks, setTasks] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<"ongoing" | "completed">("ongoing");
+  const [availability, setAvailability] = useState(true); // 👈 New: availability state
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const navigate = useNavigate();
 
+  // 🔄 Fetch tasks
   const fetchTasks = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -22,6 +24,7 @@ const WorkerDashboard = () => {
     }
   };
 
+  // ✅ Mark a task as completed
   const markCompleted = async (reportId: number) => {
     try {
       const token = localStorage.getItem("token");
@@ -38,22 +41,54 @@ const WorkerDashboard = () => {
     }
   };
 
-  // ✅ Secure logout with replace
+  // ✅ Secure logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/login/worker", { replace: true });
   };
 
-  useEffect(() => {
-    fetchTasks();
-  }, []);
-
-  const filteredTasks = tasks.filter((task: err) =>
+  // 🔁 Filter tasks based on status
+  const filteredTasks = tasks.filter((task: any) =>
     activeTab === "ongoing"
       ? task.assigned_to === user.id && task.status !== "completed"
       : task.assigned_to === user.id && task.status === "completed"
   );
+
+  // 🔄 Fetch worker's availability from localStorage
+  const fetchAvailability = () => {
+    const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
+    if (typeof savedUser.availability === "boolean") {
+      setAvailability(savedUser.availability);
+    }
+  };
+
+  // ✅ Toggle availability and update backend + localStorage
+  const toggleAvailability = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const newStatus = !availability;
+
+      await api.patch(
+        "/worker/availability",
+        { availability: newStatus },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setAvailability(newStatus);
+      const updatedUser = { ...user, availability: newStatus };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+    } catch (err) {
+      console.error("Error updating availability:", err);
+      alert("❌ Failed to update availability.");
+    }
+  };
+
+  // 📦 Load data on mount
+  useEffect(() => {
+    fetchTasks();
+    fetchAvailability();
+  }, []);
 
   return (
     <>
@@ -71,6 +106,21 @@ const WorkerDashboard = () => {
               Worker Dashboard
             </h1>
 
+            {/* 🔘 Availability Toggle */}
+            <div className="flex justify-center mb-4">
+              <button
+                onClick={toggleAvailability}
+                className={`px-5 py-2 rounded-full text-sm font-semibold transition ${
+                  availability
+                    ? "bg-green-600 text-white"
+                    : "bg-red-600 text-white"
+                }`}
+              >
+                {availability ? "🟢 Available" : "🔴 Unavailable"}
+              </button>
+            </div>
+
+            {/* 🔁 Task Status Tabs */}
             <div className="flex justify-center gap-4 mb-8">
               <button
                 className={`px-5 py-2 rounded-full text-sm font-semibold transition ${
@@ -94,6 +144,7 @@ const WorkerDashboard = () => {
               </button>
             </div>
 
+            {/* 📋 Task Cards */}
             <div className="grid gap-6">
               {filteredTasks.length === 0 ? (
                 <motion.p
@@ -106,7 +157,7 @@ const WorkerDashboard = () => {
                     : "✅ No completed tasks yet."}
                 </motion.p>
               ) : (
-                filteredTasks.map((task: err, index: number) => (
+                filteredTasks.map((task: any, index: number) => (
                   <motion.div
                     key={task.id}
                     initial={{ opacity: 0, y: 20 }}
