@@ -1,6 +1,6 @@
 const db = require("../config/mydb");
 
-// ✅ Assign a worker to a report
+// Assign a worker to a report
 const assignTask = async (reportId, workerId) => {
   const res = await db.query(
     `UPDATE reports SET assigned_to = $1, status = 'assigned' WHERE id = $2 RETURNING *`,
@@ -9,7 +9,7 @@ const assignTask = async (reportId, workerId) => {
   return res;
 };
 
-// ✅ Get assigned report for a worker
+// Get assigned report for a worker
 const getTaskByWorkerId = async (workerId) => {
   const res = await db.query(
     `SELECT * FROM reports WHERE assigned_to = $1 AND status != 'completed' ORDER BY created_at DESC LIMIT 1`,
@@ -18,7 +18,7 @@ const getTaskByWorkerId = async (workerId) => {
   return res;
 };
 
-// ✅ Update report status
+// Update report status
 const updateTaskStatus = async (reportId, status) => {
   const res = await db.query(
     `UPDATE reports SET status = $1 WHERE id = $2 RETURNING *`,

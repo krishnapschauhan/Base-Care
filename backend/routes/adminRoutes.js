@@ -5,7 +5,7 @@ const router = express.Router();
 const {
   getAllUsers,
   getAllReports,
-  getAllWorkers, // ✅ Added: Controller to fetch workers
+  getAllWorkers, 
 } = require("../controllers/adminController");
 
 // Middleware

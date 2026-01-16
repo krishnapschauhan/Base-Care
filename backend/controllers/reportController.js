@@ -6,7 +6,7 @@ const {
   getAllReports,
 } = require("../models/reportModel");
 
-// ✅ Controller: Submit a report (for user)
+// Controller: Submit a report (for user)
 exports.submitReport = async (req, res) => {
   try {
     const { description, location, category,landmark,urgency } = req.body;
@@ -23,7 +23,7 @@ exports.submitReport = async (req, res) => {
   }
 };
 
-// ✅ Controller: Get all reports (admin only)
+// Controller: Get all reports (admin only)
 exports.getReports = async (req, res) => {
   try {
     const reports = await getAllReports();
@@ -34,7 +34,7 @@ exports.getReports = async (req, res) => {
   }
 };
 
-// ✅ Controller: Get user's own reports
+// Controller: Get user's own reports
 exports.getUserReports = async (req, res) => {
   try {
     const userId = parseInt(req.params.id);
@@ -50,7 +50,7 @@ exports.getUserReports = async (req, res) => {
   }
 };
 
-// ✅ Controller: Admin assigns a task to worker
+// Controller: Admin assigns a task to worker
 exports.assignTaskToWorker = async (req, res) => {
   try {
     const { reportId, workerId } = req.body;
@@ -67,7 +67,7 @@ exports.assignTaskToWorker = async (req, res) => {
   }
 };
 
-// ✅ Controller: Worker marks report as completed
+// Controller: Worker marks report as completed
 exports.markAsCompleted = async (req, res) => {
   try {
     const reportId = parseInt(req.params.id);

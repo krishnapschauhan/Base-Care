@@ -1,6 +1,6 @@
 const db = require("../config/mydb");
 
-// ✅ Get all workers (including availability status)
+// Get all workers
 const getAllWorkers = async (req, res) => {
   try {
     const result = await db.query(
@@ -13,7 +13,7 @@ const getAllWorkers = async (req, res) => {
   }
 };
 
-// ✅ Get all reports (with user and worker names)
+// Get all reports 
 const getAllReports = async (req, res) => {
   try {
     const result = await db.query(`
@@ -33,7 +33,7 @@ const getAllReports = async (req, res) => {
   }
 };
 
-// ✅ Get all regular users
+// Get all regular users
 const getAllUsers = async (req, res) => {
   try {
     const result = await db.query(

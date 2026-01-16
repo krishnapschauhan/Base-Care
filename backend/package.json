@@ -2,7 +2,7 @@
   "name": "urban-alert-backend",
   "version": "1.0.0",
   "description": "Urban Alert backend with Express and PostgreSQL",
-  "main": "server.js",
+  "main": "api/index.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js"
